@@ -16,18 +16,18 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 
 @WebMvcTest(UserController.class)
-class UserControllerTest {
+public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
-    static ObjectMapper objectMapper = new ObjectMapper();
+    private final static ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeAll
-    static void beforeAll() {
+    public static void beforeAll() {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Test
-    void shouldCreateUser() throws Exception {
+    public void shouldCreateUser() throws Exception {
 
         User user = new User("mail@mail.com", "login", LocalDate.of(1976, 12, 6));
         user.setName("Julia");
@@ -39,7 +39,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithBadEmail() throws Exception {
+    public void shouldNotCreateUserWithBadEmail() throws Exception {
 
         User user = new User("mail mail.com", "login", LocalDate.of(1976, 12, 6));
         user.setName("Julia");
@@ -51,7 +51,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithBadLogin() throws Exception {
+    public void shouldNotCreateUserWithBadLogin() throws Exception {
 
         User user = new User("mail@mail.com", "    ", LocalDate.of(1976, 12, 6));
         user.setName("Julia");
@@ -77,7 +77,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldNotCreateUserWithBadBirthday() throws Exception {
+    public void shouldNotCreateUserWithBadBirthday() throws Exception {
 
         User user = new User("mail@mail.com", "login", LocalDate.of(197600, 12, 6));
         user.setName("Julia");

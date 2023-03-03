@@ -57,12 +57,13 @@ public class FilmController {
                         " дата выпуска не может быть ранее 28 декабря 1895");
             }
 
-            if (!films.containsKey(film.getId())) {
+            if (films.containsKey(film.getId())) {
+                films.put(film.getId(), film);
+                log.info("Данные фильма успешно обновлены: название - {}", film.getName());
+                return film;
+            } else {
                 throw new UnknownEntityException("Такого фильма ещё не существует в базе");
             }
-            log.info("Данные фильма успешно обновлены: название - {}", film.getName());
-            films.put(film.getId(), film);
-            return film;
         }
     }
 }

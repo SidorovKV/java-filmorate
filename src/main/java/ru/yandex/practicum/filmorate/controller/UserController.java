@@ -16,7 +16,7 @@ import java.util.*;
 @Slf4j
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
-    private final List<String> emails = new ArrayList<>();
+    private final Set<String> emails = new HashSet<>();
     private int nextID = 1;
 
     @GetMapping
@@ -60,15 +60,15 @@ public class UserController {
                 user.setName(user.getLogin());
             }
 
-            if (!users.containsKey(user.getId())) {
+            if (users.containsKey(user.getId())) {
+                emails.remove(users.get(user.getId()).getEmail());
+                users.put(user.getId(), user);
+                emails.add(user.getEmail());
+                log.info("Данные пользователя успешно обновлены: почта - {}", user.getEmail());
+                return user;
+            } else {
                 throw new UnknownEntityException("Такого пользователя не существует");
             }
-
-            log.info("Данные пользователя успешно обновлены: почта - {}", user.getEmail());
-            emails.remove(users.get(user.getId()).getEmail());
-            users.put(user.getId(), user);
-            emails.add(user.getEmail());
-            return user;
         }
     }
 }

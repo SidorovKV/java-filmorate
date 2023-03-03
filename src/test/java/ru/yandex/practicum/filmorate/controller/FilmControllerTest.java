@@ -15,19 +15,19 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 
 @WebMvcTest(FilmController.class)
-class FilmControllerTest {
+public class FilmControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    static ObjectMapper objectMapper = new ObjectMapper();
+    private final static ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeAll
-    static void beforeAll() {
+    public static void beforeAll() {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Test
-    void shouldCreateFilm() throws Exception {
+    public void shouldCreateFilm() throws Exception {
 
         Film film = new Film("Test film", "Test description", LocalDate.of(2000, 1, 1), 200);
 
@@ -38,7 +38,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithBadDate() throws Exception {
+    public void shouldNotCreateFilmWithBadDate() throws Exception {
 
         Film film = new Film("Test film", "Test description", LocalDate.of(1000, 1, 1), 200);
 
@@ -49,7 +49,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithBadName() throws Exception {
+    public void shouldNotCreateFilmWithBadName() throws Exception {
 
         Film film = new Film("", "Test description", LocalDate.of(1000, 1, 1), 200);
 
@@ -60,7 +60,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithVeryLongDescription() throws Exception {
+    public void shouldNotCreateFilmWithVeryLongDescription() throws Exception {
 
         Film film = new Film("Test film", "Пол Эджкомб — начальник блока смертников в тюрьме" +
                 " «Холодная гора», каждый из узников которого однажды проходит «зеленую милю» по пути к месту казни." +
@@ -75,7 +75,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldNotCreateFilmWithBadDuration() throws Exception {
+    public void shouldNotCreateFilmWithBadDuration() throws Exception {
 
         Film film = new Film("", "Test description", LocalDate.of(1000, 1, 1), -200);
 
