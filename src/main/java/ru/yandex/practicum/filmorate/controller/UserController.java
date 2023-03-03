@@ -61,11 +61,27 @@ public class UserController {
             }
 
             if (users.containsKey(user.getId())) {
-                emails.remove(users.get(user.getId()).getEmail());
-                users.put(user.getId(), user);
-                emails.add(user.getEmail());
-                log.info("Данные пользователя успешно обновлены: почта - {}", user.getEmail());
-                return user;
+
+                if (users.get(user.getId()).getEmail().equals(user.getEmail())) {
+                    //апдейт без изменения почты
+                    users.put(user.getId(), user);
+                    log.info("Данные пользователя успешно обновлены: почта - {}", user.getEmail());
+                    return user;
+                } else if (emails.contains(user.getEmail())) {
+                    //попытка изменить на существующую почту другого юзера
+                    log.warn("Пользователь с электронной почтой " +
+                            user.getEmail() + " уже зарегистрирован.");
+                    throw new UserAlreadyExistException("Пользователь с электронной почтой " +
+                            user.getEmail() + " уже зарегистрирован.");
+                } else {
+                    //апдейт с изменением почты
+                    emails.remove(users.get(user.getId()).getEmail());
+                    users.put(user.getId(), user);
+                    emails.add(user.getEmail());
+                    log.info("Данные пользователя успешно обновлены: почта - {}", user.getEmail());
+                    return user;
+                }
+
             } else {
                 throw new UnknownEntityException("Такого пользователя не существует");
             }
