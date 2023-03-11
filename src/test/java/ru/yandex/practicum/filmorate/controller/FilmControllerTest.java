@@ -6,11 +6,19 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import ru.yandex.practicum.filmorate.exceptions.ReleaseDateValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
@@ -19,6 +27,8 @@ public class FilmControllerTest {
 
     @Autowired
     private MockMvc mvc;
+    @MockBean
+    private FilmService filmService;
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeAll
@@ -28,7 +38,6 @@ public class FilmControllerTest {
 
     @Test
     public void shouldCreateFilm() throws Exception {
-
         Film film = new Film("Test film", "Test description", LocalDate.of(2000, 1, 1), 200);
 
         this.mvc.perform(post("/films")
@@ -42,16 +51,14 @@ public class FilmControllerTest {
 
         Film film = new Film("Test film", "Test description", LocalDate.of(1000, 1, 1), 200);
 
-        this.mvc.perform(post("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(film)))
-                .andExpect(status().isBadRequest());
+        InMemoryFilmStorage storage = new InMemoryFilmStorage(new InMemoryUserStorage());
+        assertThrows(ReleaseDateValidationException.class, () -> storage.create(film));
     }
 
     @Test
     public void shouldNotCreateFilmWithBadName() throws Exception {
 
-        Film film = new Film("", "Test description", LocalDate.of(1000, 1, 1), 200);
+        Film film = new Film("", "Test description", LocalDate.of(1978, 1, 1), 200);
 
         this.mvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)

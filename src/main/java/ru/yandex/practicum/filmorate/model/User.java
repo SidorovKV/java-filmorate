@@ -1,14 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
-    private int id;
+    private final Set<Long> friends = new HashSet<>();//Сет для АйДи друзей
+    private long id;
     @NotBlank(message = "Адрес почты не может состоять из пробелов")
     @NotEmpty(message = "Адрес почты не может быть пустым")
     @Email(message = "Неверный формат почты")
