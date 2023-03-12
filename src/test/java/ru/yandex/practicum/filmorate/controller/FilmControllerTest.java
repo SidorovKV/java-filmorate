@@ -51,8 +51,10 @@ public class FilmControllerTest {
 
         Film film = new Film("Test film", "Test description", LocalDate.of(1000, 1, 1), 200);
 
-        InMemoryFilmStorage storage = new InMemoryFilmStorage(new InMemoryUserStorage());
-        assertThrows(ReleaseDateValidationException.class, () -> storage.create(film));
+        this.mvc.perform(post("/films")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(film)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -19,6 +19,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationException(final ReleaseDateValidationException e) {
+        log.warn("Ошибка при создании записи о фильме: дата выпуска не может быть ранее 28 декабря 1895");
         return Map.of("error", e.getMessage());
     }
 

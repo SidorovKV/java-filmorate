@@ -20,4 +20,8 @@ public class Film {
     private final LocalDate releaseDate;
     @PositiveOrZero(message = "Длительность фильма не может быть отрицательной")
     private final int duration;
+
+    public int getLikesCount() {
+        return likes.size();
+    }
 }
