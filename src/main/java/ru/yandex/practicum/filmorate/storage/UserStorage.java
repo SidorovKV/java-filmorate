@@ -13,6 +13,4 @@ public interface UserStorage {
     User findUser(long id);
 
     void put(User user);
-
-    Map<Long, User> getUsersRegistry();
 }

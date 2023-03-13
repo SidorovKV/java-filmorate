@@ -30,8 +30,8 @@ public class UserService {
     }
 
     public void friendUsers(long id, long friendId) {
-        User user = userStorage.getUsersRegistry().get(id);
-        User friend = userStorage.getUsersRegistry().get(friendId);
+        User user = findUser(id);
+        User friend = findUser(friendId);
 
         if (user == null) {
             log.warn("Попытка добавить друга несуществующему пользователю.");
@@ -47,11 +47,10 @@ public class UserService {
     }
 
     public Collection<User> findUserFriends(long id) {
-        Map<Long, User> usersRegistry = userStorage.getUsersRegistry();
-        User user = usersRegistry.get(id);
+        User user = findUser(id);
 
         if (user != null) {
-            return user.getFriends().stream().map(usersRegistry::get).collect(Collectors.toList());
+            return user.getFriends().stream().map(this::findUser).collect(Collectors.toList());
         } else {
             log.warn("Попытка вызвать список друзей у несуществующего пользователя.");
             throw new UnknownEntityException("Такого пользователя не существует");
@@ -59,9 +58,8 @@ public class UserService {
     }
 
     public Collection<User> findCommonFriends(long id, long otherId) {
-        Map<Long, User> usersRegistry = userStorage.getUsersRegistry();
-        User user = usersRegistry.get(id);
-        User otherUser = usersRegistry.get(otherId);
+        User user = findUser(id);
+        User otherUser = findUser(otherId);
 
         if (user == null) {
             log.warn("Попытка вызвать список общих друзей у несуществующего пользователя. Первая сущность: id={}" +
@@ -74,14 +72,14 @@ public class UserService {
         } else {
             return user.getFriends().stream()
                     .filter(otherUser.getFriends()::contains)
-                    .map(usersRegistry::get)
-                    .collect(Collectors.toList());
-        }
+                    .map(this::findUser)                //А это нормально будет к БД кучу одиночных запросов слать?
+                    .collect(Collectors.toList());      //Не эффективнее в один запрос сразу все нужные айди заслать?
+        }                                               //Или нам всё разъяснят в следующем забеге?
     }
 
     public void unfriendUsers(long id, long friendId) {
-        User user = userStorage.getUsersRegistry().get(id);
-        User friend = userStorage.getUsersRegistry().get(friendId);
+        User user = findUser(id);
+        User friend = findUser(friendId);
 
         if (user == null) {
             log.warn("Попытка удалить друга несуществующему пользователю.");

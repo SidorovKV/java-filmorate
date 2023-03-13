@@ -12,7 +12,5 @@ public interface FilmStorage {
 
     Film findFilm(Long id);
 
-    Map<Long, Film> getFilmsRegistry();
-
     void put(Film film);
 }

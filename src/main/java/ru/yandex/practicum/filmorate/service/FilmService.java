@@ -27,8 +27,8 @@ public class FilmService {
     }
 
     public void addLike(long id, long userId) {
-        Film film = filmStorage.getFilmsRegistry().get(id);
-        User user = userStorage.getUsersRegistry().get(userId);
+        Film film = findFilm(id);
+        User user = userStorage.findUser(userId);
 
         if (film == null) {
             log.warn("Попытка лайкнуть несуществующий фильм");
@@ -43,8 +43,8 @@ public class FilmService {
     }
 
     public void unLike(long id, long userId) {
-        Film film = filmStorage.getFilmsRegistry().get(id);
-        User user = userStorage.getUsersRegistry().get(userId);
+        Film film = findFilm(id);
+        User user = userStorage.findUser(userId);
 
         if (film == null) {
             log.warn("Попытка убрать лайк у несуществующего фильма");
@@ -67,7 +67,7 @@ public class FilmService {
     }
 
     public Collection<Film> findPopular(Long count) {
-        return filmStorage.getFilmsRegistry().values().stream()
+        return findAll().stream()
                 .sorted(Comparator.comparing(Film::getLikesCount).reversed())
                 .limit(Objects.requireNonNullElse(count, 10L))
                 .collect(Collectors.toList());

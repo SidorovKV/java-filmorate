@@ -85,9 +85,4 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UnknownEntityException("Такого пользователя не существует");
         }
     }
-
-    @Override
-    public Map<Long, User> getUsersRegistry() {
-        return usersRegistry;
-    }
 }
